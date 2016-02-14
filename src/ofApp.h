@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "LaserWords.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp
 {
@@ -20,5 +21,7 @@ class ofApp : public ofBaseApp
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-  LaserWords  words;
+    LaserWords  words;
+    ofxPanel gui;
+    bool  guiVisible;
 };

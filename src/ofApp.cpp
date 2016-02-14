@@ -4,8 +4,11 @@
 void ofApp::setup()
 {
   ofBackground(0);
-  ofSetFrameRate(60);
+  ofSetFrameRate(30);
   words.setup(1024,768);
+  gui.setup();
+  guiVisible = true;
+  gui.add(*words.getLaserWordsParams());
 }
 
 //--------------------------------------------------------------
@@ -18,7 +21,8 @@ void ofApp::update()
 void ofApp::draw()
 {
   words.draw();
-  words.drawDebug();
+  if(guiVisible)
+    gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -28,7 +32,8 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-  
+  if(key == 'g')
+    guiVisible = !guiVisible;
 }
 
 //--------------------------------------------------------------
