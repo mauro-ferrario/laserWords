@@ -12,6 +12,7 @@
 #include  "ofMain.h"
 #include "ofxLibwebsockets.h"
 #include "ofxGui.h"
+#include "GoofyBlurGLSL.h"
 
 #define NUM_MESSAGES 30 // how many past messages we want to keep
 
@@ -49,7 +50,12 @@ private:
   ofParameter<float>        blackSpeed;
   ofParameter<int>          totSecondRemoveWordsFromList;
   ofParameter<bool>         bDrawDebug;
+  ofParameter<float>        blurValue;
+  ofParameter<bool>         fill;
+  ofParameter<int>          border;
+  ofParameter<ofColor>      color;
   vector<string>            newWordsToWrite;
+  GoofyBlurGLSL             blur;
 };
 
 #endif /* defined(__laserWords__LaserWords__) */

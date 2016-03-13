@@ -18,11 +18,12 @@ void LaserWords::setup(int width, int height)
   setupWebSockets();
   setupFont();
   setupFBO(width, height);
+  blur.setup(width, height);
 }
 
 void LaserWords::setupFont()
 {
-  font.load("leaguespartan.ttff", 160, true, true, true);
+  font.load("leaguespartan.ttf", 160, true, true, true);
 }
 
 void LaserWords::setupFBO(int width, int height)
@@ -57,19 +58,16 @@ void LaserWords::setupWebSockets()
 
 void LaserWords::update()
 {
+  blur.update(fbo, ofVec2f(blurValue, blurValue));
   fbo.begin();
   if(newWordsToWrite.size() > 0)
   {
     for(int a = 0; a < newWordsToWrite.size(); a++)
     {
-//      if(newWordsToWrite[a] != "")
-//      {
-        if(!inInsideVector(newWordsToWrite[a]))
-        {
-          writeNewText(newWordsToWrite[a]);
-          wordsToRemove.push_back(newWordsToWrite[a]);
-//          textToWrite = "";
-//        }
+      if(!inInsideVector(newWordsToWrite[a]))
+      {
+        writeNewText(newWordsToWrite[a]);
+        wordsToRemove.push_back(newWordsToWrite[a]);
       }
     }
     newWordsToWrite.clear();
@@ -77,7 +75,7 @@ void LaserWords::update()
   
   checkWordToRemove();
   ofPushStyle();
-  ofSetColor(0,1);
+  ofSetColor(0,blackSpeed);
   ofDrawRectangle(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
   ofPopStyle();
   fbo.end();
@@ -104,34 +102,25 @@ void LaserWords::checkWordToRemove()
 void LaserWords::writeNewText(string text)
 {
   ofPushStyle();
-  ofSetColor(255);
-  ofNoFill();
+  ofSetColor(color);
+  if(!fill)
+  {
+    ofNoFill();
+    ofSetLineWidth(border);
+  }
   int desiredWidth = ofRandom(100, ofGetWindowWidth());
-//  desiredWidth = ofGetWindowWidth();
   ofRectangle boundingBoxOriginal = font.getStringBoundingBox(text,0, 0);
   float prop = float(boundingBoxOriginal.width/boundingBoxOriginal.height);
   int actualSize = font.getSize();
-//  boundingBoxOriginal.x : actualSize = desiredWidth : newSize
-  cout << "desiredWidth= " << desiredWidth << endl;
-  cout << " boundingBoxOriginal" << boundingBoxOriginal.width<< endl;
   float newSize = float(desiredWidth/boundingBoxOriginal.width);
-  cout << "OLD SIZE = " << actualSize << endl;
-  cout << "NEW SIZE = " << newSize << endl;
   ofVec2f newBoundingBoxSize;
   newBoundingBoxSize.x = boundingBoxOriginal.width * newSize;
   newBoundingBoxSize.y = boundingBoxOriginal.height * newSize;
   ofPushMatrix();
   ofVec2f newPos = getRandomPos(newBoundingBoxSize.x, newBoundingBoxSize.y);
-  cout << "NEW POS = " << newPos << endl;
-//  ofTranslate(newPos.x, newPos.y);
   ofTranslate(newPos.x, newPos.y);
   ofScale(newSize, newSize);
   font.drawStringAsShapes(text, 0,boundingBoxOriginal.height);
-//  ofPushStyle();
-//  ofSetColor(255,0,0,200);
-//  ofFill();
-//  ofDrawRectangle(0,0, boundingBoxOriginal.width, boundingBoxOriginal.height);
-//  ofPopStyle();
   ofPopMatrix();
   ofPopStyle();
 }
@@ -146,6 +135,7 @@ ofVec2f LaserWords::getRandomPos(int width, int height)
 
 void LaserWords::draw()
 {
+//  blur.draw();
   fbo.draw(0,0);
   if(bDrawDebug)
     drawDebug();
@@ -229,7 +219,11 @@ ofParameterGroup* LaserWords::getLaserWordsParams()
   {
     laserWordsParams->setName("LaserWords");
     laserWordsParams->add(bDrawDebug.set("Draw debug", false));
-    laserWordsParams->add(blackSpeed.set("Black speed", 0, 0, 255));
+    laserWordsParams->add(fill.set("Fill", false));
+    laserWordsParams->add(border.set("Border", 0, 0, 255));
+    laserWordsParams->add(blurValue.set("Blur", 0, 0, 2));
+    laserWordsParams->add(blackSpeed.set("Black speed", 0, 0, 2));
+    laserWordsParams->add(color.set("Color", ofColor(0), ofColor(0), ofColor(255)));
     laserWordsParams->add(totSecondRemoveWordsFromList.set("totSecondRemoveWordsFromList", 1, 0, 100));
     
   }

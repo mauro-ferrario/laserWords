@@ -5,7 +5,7 @@ void ofApp::setup()
 {
   ofBackground(0);
   ofSetFrameRate(30);
-  words.setup(1024,768);
+  words.setup(1920,1080);
   gui.setup();
   guiVisible = true;
   gui.add(*words.getLaserWordsParams());
